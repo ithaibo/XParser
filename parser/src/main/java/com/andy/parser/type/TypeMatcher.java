@@ -1,4 +1,4 @@
-package com.andy.parser;
+package com.andy.parser.type;
 
 import android.support.annotation.NonNull;
 

@@ -1,8 +1,12 @@
-package com.andy.parser;
+package com.andy.parser.from.json;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
+
+import com.andy.parser.to.array.ArrayParser;
+import com.andy.parser.KeysParser;
+import com.andy.parser.type.TypeMatcher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,7 +18,7 @@ import java.util.Iterator;
  * Created by Andy on 2018/5/27.
  */
 
-public class BundleParser {
+public class JSONParser {
     /**
      * 将JOSN字符串解析为Bundle
      *

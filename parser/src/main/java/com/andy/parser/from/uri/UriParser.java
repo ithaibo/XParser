@@ -1,9 +1,12 @@
-package com.andy.parser;
+package com.andy.parser.from.uri;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+
+import com.andy.parser.to.base.BaseParser;
+import com.andy.parser.type.TypeMatcher;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -60,12 +63,12 @@ public class UriParser {
                 continue;
             }
             if (TypeMatcher.isByte(valStr)) {
-                Byte valByte = StringParser.parseByte(valStr);
+                Byte valByte = BaseParser.parseByte(valStr);
                 if (valByte != null) {
 
                 }
             } else if(TypeMatcher.isShort(valStr)) {
-                Short valShort = StringParser.parseShort(valStr);
+                Short valShort = BaseParser.parseShort(valStr);
             }
         }
 

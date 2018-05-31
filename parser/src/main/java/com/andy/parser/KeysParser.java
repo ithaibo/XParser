@@ -3,6 +3,8 @@ package com.andy.parser;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
+import com.andy.parser.type.TypeMatcher;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

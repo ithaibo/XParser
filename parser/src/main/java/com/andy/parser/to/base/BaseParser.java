@@ -1,13 +1,16 @@
-package com.andy.parser;
+package com.andy.parser.to.base;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+
+import com.andy.parser.from.json.JSONParser;
+import com.andy.parser.type.TypeMatcher;
 
 /**
  * @author wuhaibo
  * create date: 2018/5/30.
  */
-public class StringParser {
+public class BaseParser {
 
     @Nullable
     public static Byte parseByte(@Nullable String input) {
@@ -128,7 +131,7 @@ public class StringParser {
         }
 
         try {
-            return BundleParser.parse(input);
+            return JSONParser.parse(input);
         } catch (NumberFormatException ignored) {
             // ignored
             return null;
@@ -149,7 +152,7 @@ public class StringParser {
         } else if (tClass.equals(Double.class)) {
             return (T) parseDouble(input);
         } else if (tClass.equals(Bundle.class)) {
-            return (T) BundleParser.parse(input);
+            return (T) JSONParser.parse(input);
         }
 
         return null;
