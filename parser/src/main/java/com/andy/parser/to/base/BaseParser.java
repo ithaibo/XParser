@@ -1,9 +1,11 @@
 package com.andy.parser.to.base;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.andy.parser.from.json.JSONParser;
+import com.andy.parser.type.StringTypeMatcher;
 import com.andy.parser.type.TypeMatcher;
 
 /**
@@ -136,6 +138,18 @@ public class BaseParser {
             // ignored
             return null;
         }
+    }
+
+    public static Boolean parseBoolean(@NonNull String input) {
+        if (input.isEmpty()) {
+            return null;
+        }
+
+        if (!StringTypeMatcher.isBoolean(input)) {
+            return null;
+        }
+
+        return Boolean.parseBoolean(input);
     }
 
     public static <T> T parse(@Nullable String input, Class<T> tClass) {

@@ -6,12 +6,16 @@ import android.text.TextUtils;
 
 import com.andy.parser.to.array.ArrayParser;
 import com.andy.parser.KeysParser;
+import com.andy.parser.to.list.ListParser;
+import com.andy.parser.type.JSONTypeMatcher;
 import com.andy.parser.type.TypeMatcher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -106,6 +110,12 @@ public class JSONParser {
                         bundle.putBooleanArray(key, ArrayParser.parseBooleanArray(jsonArray));
                     } else if (TypeMatcher.isStringArray(jsonArray)) {
                         bundle.putStringArray(key, ArrayParser.parseStringArray(jsonArray));
+                    } else if (JSONTypeMatcher.isArray(JSONObject.class, jsonArray)) {
+                        ArrayList<String> list = ListParser.parse(String.class, jsonArray);
+                        ArrayList<HashMap<String, Object>> valueList;
+                    } else if (JSONTypeMatcher.isArray(JSONArray.class, jsonArray)) {
+                        ArrayList<String> list = ListParser.parse(String.class, jsonArray);
+                        ArrayList<ArrayList<Object>> valueList;
                     }
                 } else if (TypeMatcher.isString(key, jsonObject)) {
                     bundle.putString(key, jsonObject.getString(key));

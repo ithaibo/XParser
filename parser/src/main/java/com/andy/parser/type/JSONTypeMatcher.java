@@ -155,6 +155,25 @@ public class JSONTypeMatcher {
         return value != null;
     }
 
+    public static <T> boolean isArray(@NonNull Class<T> tClass, @NonNull JSONArray jsonArray) {
+        if (jsonArray.length() <= 0) {
+            return false;
+        }
+
+        String valFist;
+        try {
+            valFist = jsonArray.getString(0);
+        } catch (JSONException e) {
+            valFist = null;
+        }
+
+        if (valFist == null) {
+            return true;
+        }
+
+        return StringTypeMatcher.is(tClass, valFist);
+    }
+
     public static boolean isIntArray(@NonNull JSONArray jsonArray) {
         if (jsonArray.length() <= 0) {
             return true;

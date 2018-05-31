@@ -4,12 +4,16 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 
 import com.andy.parser.from.json.JSONParser;
+import com.andy.parser.to.base.BaseParser;
+import com.andy.parser.to.list.ListParser;
 import com.andy.parser.type.JSONTypeMatcher;
+import com.andy.parser.type.StringTypeMatcher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -17,122 +21,119 @@ import java.util.List;
  */
 
 public class ArrayParser {
-    /**
-     * 将JSONArray解析为int[]
-     * @param jsonArray
-     * @return
-     */
-    public static int[] parseIntArray(@NonNull JSONArray jsonArray) {
-        if (jsonArray.length() <= 0) {
+
+    public static byte[] parseByteArray(@NonNull JSONArray jsonArray) {
+        List<Byte> list = ListParser.parse(Byte.class, jsonArray);
+        if (list == null) {
             return null;
         }
 
-        List<Integer> list = new ArrayList<>();
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                list.add(jsonArray.getInt(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        byte[] result = new byte[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
         }
 
-        int[] array = new int[list.size()];
-        for (int i= 0 ; i< list.size(); i++) {
-            array[i] = list.get(i);
+        return result;
+    }
+
+    public static short[] parseShortArray(@NonNull JSONArray jsonArray) {
+        List<Short> list = ListParser.parse(Short.class, jsonArray);
+        if (list == null) {
+            return null;
         }
 
-        return array;
+        short[] result = new short[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+
+        return result;
+    }
+
+    /**
+     * 将JSONArray解析为int[]
+     */
+    public static int[] parseIntArray(@NonNull JSONArray jsonArray) {
+        List<Integer> list = ListParser.parse(Integer.class, jsonArray);
+        if (list == null) {
+            return null;
+        }
+
+        int[] result = new int[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+
+        return result;
     }
 
     /**
      * 将JSONArray解析为long[]
-     * @param jsonArray
-     * @return
      */
     public static long[] parseLongArray(@NonNull JSONArray jsonArray) {
-        if (jsonArray.length() <= 0) {
+        List<Long> list = ListParser.parse(Long.class, jsonArray);
+        if (list == null) {
             return null;
         }
 
-        List<Long> list = new ArrayList<>();
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                list.add(jsonArray.getLong(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        long[] result = new long[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
         }
 
-        long[] array = new long[list.size()];
-        for (int i= 0 ; i< list.size(); i++) {
-            array[i] = list.get(i);
+        return result;
+    }
+
+    public static float[] parseFloatArray(@NonNull JSONArray jsonArray) {
+        List<Float> list = ListParser.parse(Float.class, jsonArray);
+        if (list == null) {
+            return null;
         }
 
-        return array;
+        float[] result = new float[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
+        }
+
+        return result;
     }
 
     /**
      * 将JSONArray解析为double[]
-     * @param jsonArray
-     * @return
      */
     public static double[] parseDoubleArray(@NonNull JSONArray jsonArray) {
-        if (jsonArray.length() <= 0) {
+        List<Double> list = ListParser.parse(Double.class, jsonArray);
+        if (list == null) {
             return null;
         }
 
-        List<Double> list = new ArrayList<>();
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                list.add(jsonArray.getDouble(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        double[] result = new double[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
         }
 
-        double[] array = new double[list.size()];
-        for (int i= 0 ; i< list.size(); i++) {
-            array[i] = list.get(i);
-        }
-
-        return array;
+        return result;
     }
 
     /**
      * 将JSONArray解析为boolean[]
-     * @param jsonArray
-     * @return
      */
     public static boolean[] parseBooleanArray(@NonNull JSONArray jsonArray) {
-        if (jsonArray.length() <= 0) {
+        List<Boolean> list = ListParser.parse(Boolean.class, jsonArray);
+        if (list == null) {
             return null;
         }
 
-        List<Boolean> list = new ArrayList<>();
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                list.add(jsonArray.getBoolean(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        boolean[] result = new boolean[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            result[i] = list.get(i);
         }
 
-        boolean[] array = new boolean[list.size()];
-        for (int i= 0 ; i< list.size(); i++) {
-            array[i] = list.get(i);
-        }
-
-        return array;
+        return result;
     }
 
     /**
      * 将JSONArray解析为String[]
-     * @param jsonArray
-     * @return
      */
     public static String[] parseStringArray(@NonNull JSONArray jsonArray) {
         if (jsonArray.length() <= 0) {
@@ -150,7 +151,7 @@ public class ArrayParser {
         }
 
         String[] array = new String[list.size()];
-        for (int i= 0 ; i< list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i);
         }
 
@@ -159,10 +160,8 @@ public class ArrayParser {
 
     /**
      * 将JSONArray解析为Bundle[]
-     * @param jsonArray
-     * @return
      */
-    public static Bundle[] pareBundleArray(@NonNull  JSONArray jsonArray) {
+    public static Bundle[] pareBundleArray(@NonNull JSONArray jsonArray) {
         if (jsonArray.length() <= 0) {
             return null;
         }
@@ -187,7 +186,7 @@ public class ArrayParser {
         }
 
         Bundle[] array = new Bundle[list.size()];
-        for (int i= 0 ; i< list.size(); i++) {
+        for (int i = 0; i < list.size(); i++) {
             array[i] = list.get(i);
         }
 

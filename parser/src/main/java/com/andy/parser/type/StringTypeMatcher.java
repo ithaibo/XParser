@@ -2,6 +2,9 @@ package com.andy.parser.type;
 
 import android.support.annotation.NonNull;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 /**
  * @author wuhaibo
  * create date: 2018/5/31.
@@ -102,8 +105,6 @@ public class StringTypeMatcher {
 
     /**
      * 是否为Boolean
-     * @param str
-     * @return
      */
     public static boolean isBoolean(@NonNull String str) {
         return str.toLowerCase().matches("^true$") ||
@@ -112,8 +113,6 @@ public class StringTypeMatcher {
 
     /**
      * 是否为普通字符串
-     * @param str
-     * @return
      */
     public static boolean isString(String str) {
         if (str == null) {
@@ -129,5 +128,29 @@ public class StringTypeMatcher {
         }
 
         return true;
+    }
+
+    public static <T> boolean is(Class<T> tClass, String input) {
+        if (tClass.equals(Byte.class)) {
+            return isByte(input);
+        } else if (tClass.equals(Short.class)) {
+            return isShort(input);
+        } else if (tClass.equals(Integer.class)) {
+            return isInt(input);
+        } else if (tClass.equals(Long.class)) {
+            return isLong(input);
+        } else if (tClass.equals(Float.class)) {
+            return isFloat(input);
+        } else if (tClass.equals(Double.class)) {
+            return isDouble(input);
+        } else if (tClass.equals(String.class)) {
+            return isString(input);
+        } else if (tClass.equals(JSONObject.class)) {
+            return JSONTypeMatcher.isJson(input);
+        } else if (tClass.equals(JSONArray.class)) {
+            return JSONTypeMatcher.isJsonArray(input);
+        } else {
+            return false;
+        }
     }
 }
