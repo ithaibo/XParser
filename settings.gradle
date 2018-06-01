@@ -1,1 +1,1 @@
-include ':app', ':parser', ':xparser_compiler'
+include ':app', ':parser', ':xparser_compiler', ':xparser_model'
