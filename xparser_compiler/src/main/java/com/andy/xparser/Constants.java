@@ -1,4 +1,4 @@
-package com.andy.xparser.model;
+package com.andy.xparser;
 
 /**
  * @author wuhaibo

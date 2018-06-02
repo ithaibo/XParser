@@ -1,19 +1,13 @@
-package com.andy.parser.to.array;
+package com.andy.parser.array;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-import com.andy.parser.from.json.JSONParser;
-import com.andy.parser.to.base.BaseParser;
-import com.andy.parser.to.list.ListParser;
-import com.andy.parser.type.JSONTypeMatcher;
-import com.andy.parser.type.StringTypeMatcher;
+import com.andy.parser.list.ListParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -158,38 +152,33 @@ public class ArrayParser {
         return array;
     }
 
-    /**
-     * 将JSONArray解析为Bundle[]
-     */
-    public static Bundle[] pareBundleArray(@NonNull JSONArray jsonArray) {
-        if (jsonArray.length() <= 0) {
+//    public static <T> T parseArray(Class<T> type, String valStr) {
+//        try {
+//            return new Gson().fromJson(valStr, type);
+//        } catch (JsonSyntaxException ignored) {
+//            return null;
+//        }
+//    }
+
+//    public static <T> T parseArray(Type type, String valStr) {
+//        try {
+//            return new Gson().fromJson(valStr, type);
+//        } catch (JsonSyntaxException ignored) {
+//            return null;
+//        }
+//    }
+
+    public static char[] parseCharArray(JSONArray jsonArray) {
+        List<Character> list = ListParser.parse(Character.class, jsonArray);
+        if (list == null) {
             return null;
         }
 
-        List<Bundle> list = new ArrayList<>();
-
-        for (int i = 0; i < jsonArray.length(); i++) {
-            try {
-                String item = jsonArray.getString(i);
-                if (item == null || item.isEmpty()) {
-                    continue;
-                }
-                if (JSONTypeMatcher.isJsonObject(item)) {
-                    Bundle bundle = JSONParser.parse(item);
-                    if (bundle != null) {
-                        list.add(bundle);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        Bundle[] array = new Bundle[list.size()];
+        char[] result = new char[list.size()];
         for (int i = 0; i < list.size(); i++) {
-            array[i] = list.get(i);
+            result[i] = list.get(i);
         }
 
-        return array;
+        return result;
     }
 }

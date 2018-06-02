@@ -1,10 +1,8 @@
-package com.andy.parser.to.base;
+package com.andy.parser.base;
 
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.andy.parser.from.json.JSONParser;
 import com.andy.parser.type.StringTypeMatcher;
 import com.andy.parser.type.TypeMatcher;
 
@@ -122,24 +120,6 @@ public class BaseParser {
         }
     }
 
-    @Nullable
-    public static Bundle parseJsonObject(@Nullable String input) {
-        if (input.isEmpty()) {
-            return null;
-        }
-
-        if (!TypeMatcher.isJsonObject(input)) {
-            return null;
-        }
-
-        try {
-            return JSONParser.parse(input);
-        } catch (NumberFormatException ignored) {
-            // ignored
-            return null;
-        }
-    }
-
     public static Boolean parseBoolean(@NonNull String input) {
         if (input.isEmpty()) {
             return null;
@@ -165,8 +145,6 @@ public class BaseParser {
             return (T) parseFloat(input);
         } else if (tClass.equals(Double.class)) {
             return (T) parseDouble(input);
-        } else if (tClass.equals(Bundle.class)) {
-            return (T) JSONParser.parse(input);
         }
 
         return null;

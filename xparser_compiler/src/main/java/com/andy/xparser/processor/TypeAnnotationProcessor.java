@@ -1,10 +1,15 @@
 package com.andy.xparser.processor;
 
-import com.andy.xparser.model.Constants;
+import com.alibaba.android.arouter.facade.annotation.Autowired;
+import com.alibaba.android.arouter.facade.annotation.Route;
+import com.andy.xparser.Constants;
+
 import com.andy.xparser.model.IDataTypeProvider;
+import com.andy.xparser.model.TypeToken;
 import com.google.auto.service.AutoService;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -24,8 +29,6 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic;
 
-import annotation.Autowired;
-import annotation.Route;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -35,10 +38,10 @@ import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeSpec;
 
 @AutoService(Processor.class)
-@SupportedAnnotationTypes("annotation.Autowired")
-@SupportedSourceVersion(SourceVersion.RELEASE_8)
+@SupportedAnnotationTypes("com.alibaba.android.arouter.facade.annotation.Autowired")
+@SupportedSourceVersion(SourceVersion.RELEASE_7)
 public class TypeAnnotationProcessor extends AbstractProcessor {
-    private static final String FORMATTER_PREFIX_LOG = "--XParserCompiler, %s";
+    private static final String FORMATTER_PREFIX_LOG = "--------XParserCompiler, %s";
     private Messager messager;
     private Filer mFiler;
 
@@ -53,7 +56,7 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Set<? extends Element> elements = roundEnv.getElementsAnnotatedWith(Autowired.class);
         if (elements == null || elements.size() <= 0) {
-            messager.printMessage(Diagnostic.Kind.WARNING,
+            messager.printMessage(Diagnostic.Kind.NOTE,
                     String.format(FORMATTER_PREFIX_LOG, "nothing need to process!"));
             return false;
         }
@@ -62,7 +65,7 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
                 String.format(FORMATTER_PREFIX_LOG, "start to process..."));
 
         Map<String, SourceModel> javaFileBuilderMap = new HashMap<>();
-        // write put
+        // collect all Annotation Route, Autowired.
         for (Element element : elements) {
             element.getEnclosedElements();
             VariableElement fieldElement = (VariableElement) element;
@@ -75,7 +78,6 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
             String dataName = element.getAnnotation(Autowired.class).name();
             String path = route.path();
             String actSimpleName = classElement.getSimpleName().toString();
-            String actFullClassName = classElement.getQualifiedName().toString();
             String fieldClassName = fieldElement.asType().toString();
 
             SourceModel sourceModel;
@@ -94,7 +96,7 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
                 ParameterizedTypeName inputMapTypeOfGroup = ParameterizedTypeName.get(
                         ClassName.get(Map.class),
                         ClassName.get(String.class),
-                        ClassName.get(Class.class)
+                        ClassName.get(Type.class)
                 );
 
                 ParameterSpec groupParamSpec = ParameterSpec.builder(inputMapTypeOfGroup,
@@ -106,10 +108,16 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
                         .addParameter(groupParamSpec);
             }
 
-            sourceModel.method.addStatement("wareHouse.put($S, $T.class)",
-                    path + Constants.SEPERATE + dataName,
-                    ClassName.get(fieldElement.asType()));
-
+            if (fieldElement.asType().getKind().isPrimitive()) {
+                sourceModel.method.addStatement("wareHouse.put($S, $T.class)",
+                        path + Constants.SEPERATE + dataName,
+                        fieldElement.asType());
+            } else {
+                sourceModel.method.addStatement("wareHouse.put($S, new $T<$T>(){}.getType())",
+                        path + Constants.SEPERATE + dataName,
+                        TypeToken.class,
+                        fieldElement.asType());
+            }
             javaFileBuilderMap.put(path, sourceModel);
         }
 
@@ -134,6 +142,8 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
                     messager.printMessage(Diagnostic.Kind.ERROR,
                             String.format(FORMATTER_PREFIX_LOG, e.getMessage()));
                     e.printStackTrace();
+
+                    throw new RuntimeException(e);
                 }
 
 

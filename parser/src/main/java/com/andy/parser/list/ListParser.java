@@ -1,15 +1,14 @@
-package com.andy.parser.to.list;
+package com.andy.parser.list;
 
 import android.support.annotation.NonNull;
 
-import com.andy.parser.to.base.BaseParser;
+import com.andy.parser.base.BaseParser;
 import com.andy.parser.type.JSONTypeMatcher;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 将JSONArray解析为List

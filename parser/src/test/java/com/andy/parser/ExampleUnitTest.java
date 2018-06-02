@@ -1,10 +1,12 @@
 package com.andy.parser;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -19,13 +21,16 @@ public class ExampleUnitTest {
 
     @Test
     public void test() {
-        String input = "[{\"id\":1},{\"id\":2}]";
-        try {
-            JSONArray jsonArray = new JSONArray(input);
-            String item = jsonArray.getString(0);
-            assertTrue(!item.isEmpty());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        ArrayList<Integer> intList = new ArrayList<>();
+        assertTrue(ArrayList.class.equals(intList.getClass()));
+    }
+
+    @Test
+    public void testJsonParse() {
+        String jsonArray = "[1,2,3,4,5]";
+        int[] integerArrayList = new Gson().fromJson(jsonArray, int[].class);
+
+        assertTrue(integerArrayList != null &&
+                integerArrayList[2] == 3);
     }
 }

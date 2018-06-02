@@ -4,7 +4,6 @@ android {
     compileSdkVersion 27
 
 
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 27
@@ -13,6 +12,11 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ moduleName : project.getName() ]
+            }
+        }
     }
 
     buildTypes {
@@ -25,12 +29,17 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation 'com.android.support:appcompat-v7:27.1.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    implementation project(':xparser_model')
+    annotationProcessor project(':xparser_compiler')
 
-    implementation 'com.google.code.gson:gson:2.8.2'
+    implementation 'com.alibaba:arouter-api:1.3.1'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
+
+    implementation project(':xparser_model')
+    compile project(path: ':parser')
 }

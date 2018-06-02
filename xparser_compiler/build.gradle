@@ -4,7 +4,10 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.google.auto.service:auto-service:1.0-rc2'
     implementation 'com.squareup:javapoet:1.9.0'
+
     implementation project(':xparser_model')
+
+    implementation 'com.alibaba:arouter-annotation:1.0.4'
 }
 
 sourceCompatibility = "1.7"
