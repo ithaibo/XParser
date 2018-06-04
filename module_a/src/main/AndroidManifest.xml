@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.andy.module_a">
+    package="com.andy.a">
 
     <application>
-        <activity android:name=".ActivityTest" />
+        <activity android:name="com.andy.a.ModuleATest" android:label="Module_A_test" />
     </application>
 </manifest>

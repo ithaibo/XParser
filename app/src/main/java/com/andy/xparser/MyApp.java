@@ -14,7 +14,14 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        if (BuildConfig.DEBUG) {
+            ARouter.openLog();
+            ARouter.openDebug();
+            XParser.Debugable = true;
+        }
+
         XParser.init(this);
+
         ARouter.init(this);
     }
 }

@@ -74,6 +74,7 @@ public class ClassUtils {
                         Enumeration<String> dexEntries = dexfile.entries();
                         while (dexEntries.hasMoreElements()) {
                             String className = dexEntries.nextElement();
+                            // 这里要对生成的
                             if (className.startsWith(packageName)) {
                                 classNames.add(className);
                             }

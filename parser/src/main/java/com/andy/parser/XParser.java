@@ -29,33 +29,47 @@ import java.util.Set;
  * create date: 2018/6/1.
  */
 public class XParser {
+    public static boolean Debugable = false;
+
     public synchronized static void init(Context context) {
         // collect all data annotations
         try {
+            long startCollectClass = System.currentTimeMillis();
             Set<String> dataTypeClassSet = ClassUtils.getFileNameByPackageName(context,
                     Constants.NAME_PACKAGE_AUTOWIRED_ROUTE);
-
+            long endCollectClass = System.currentTimeMillis();
+            Log.i("XParser", "time spend on collect classes: " + (endCollectClass - startCollectClass));
             if (dataTypeClassSet == null || dataTypeClassSet.isEmpty()) {
                 Log.i("XParser", "dataTypeClassSet is isEmpty");
                 return;
             }
 
             for (String className : dataTypeClassSet) {
+                if (className.contains("$")) {
+                    Log.w("XParser", "unknown class: " + className);
+                    // 忽略匿名内部类（TypeToken）
+                    continue;
+                }
+
                 Log.i("XParser", "find a dataTypeClass: " + className);
                 Class clazz = Class.forName(className);
                 if (clazz == null) {
+                    Log.e("XParser", "class parsed fail, className : " + className);
                     continue;
                 }
                 Constructor constructor = clazz.getConstructor();
                 if (constructor != null) {
                     ((IDataTypeProvider) constructor.newInstance()).loadInto(WareHouse.dataTypeMap);
-                    Log.i("XParser", "add a record into warehouse, all data: " + WareHouse.dataTypeMap);
+                    Log.i("XParser", "add a record into warehouse");
                 } else {
                     Log.e("XParser", "Constructor for " + className + " is null");
                 }
 
             }
 
+            if (Debugable) {
+                Log.i("XParser", "warehouse: " + WareHouse.dataTypeMap);
+            }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -75,7 +89,7 @@ public class XParser {
         }
     }
 
-    private static final String FORMAT_PATH_DATA = "%s$$%s";
+    private static final String FORMAT_PATH_DATA = "%s" + Constants.SEPERATE +"%s";
 
     /**
      * 将uri解析为Bundle

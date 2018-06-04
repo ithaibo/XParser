@@ -1,4 +1,4 @@
-package com.andy.module_a;
+package com.andy.a;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

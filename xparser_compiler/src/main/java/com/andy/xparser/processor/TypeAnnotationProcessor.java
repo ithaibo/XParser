@@ -2,8 +2,8 @@ package com.andy.xparser.processor;
 
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.andy.xparser.Constants;
 
+import com.andy.xparser.model.Constants;
 import com.andy.xparser.model.IDataTypeProvider;
 import com.andy.xparser.model.TypeToken;
 import com.google.auto.service.AutoService;
@@ -153,7 +153,7 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
         messager.printMessage(Diagnostic.Kind.NOTE,
                 String.format(FORMATTER_PREFIX_LOG, "process success."));
 
-        return true;
+        return false;
     }
 
 }

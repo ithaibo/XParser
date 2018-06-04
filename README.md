@@ -13,8 +13,7 @@
 | double | double | putDouble |
 | String | String | putString |
 | boolean | boolean | putBoolean |
-| <T> | JSONObject | putSerializable |
-| ArrayList<T> | JSONArray | putSerializable |
+| \<T\> | JSONObject | putString |
 
 ## JSONArray会按照数组中第一个元素的类型进行解析（数组中所有的元素类型必须一致）
 
