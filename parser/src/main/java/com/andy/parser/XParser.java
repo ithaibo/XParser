@@ -189,8 +189,10 @@ public class XParser {
 
                     if (JSONTypeMatcher.isJson(valueRaw)) {
                         bundle.putString(key, valueRaw);
+                        continue;
                     }
 
+                    Log.e("XParser", "unknown type: " + key);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -268,6 +270,8 @@ public class XParser {
             bundle.putBoolean(key, parsed == null ? false : parsed);
             return true;
         }
+
+        Log.e("XParser", "type of parameter error");
 
         return false;
     }

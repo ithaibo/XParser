@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.alibaba.android.arouter.launcher.ARouter;
@@ -45,18 +44,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //{\"name\":\"Andy\",\"id\":123}
-
         findViewById(R.id.btnUri).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String uri = etSourceUri.getText().toString();
-                Uri uri1 = Uri.parse(uri);
-                Bundle bundle = XParser.fromUri("/module_a/test", uri1);
+                String url = etSourceUri.getText().toString();
+                Uri uri = Uri.parse(url);
+                Bundle bundle = XParser.fromUri("/module_a/test", uri);
                 if (bundle != null) {
                     Log.i("MainActivity", "uri, bundle: " + bundle);
-                    ARouter.getInstance().build(etPath.getText().toString())
-                            .with(bundle)
+//                    ARouter.getInstance().build(etPath.getText().toString())
+//                            .with(bundle)
+//                            .navigation();
+
+                    ARouter.getInstance().build(uri)
                             .navigation();
                 }
             }
