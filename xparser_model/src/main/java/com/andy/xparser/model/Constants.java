@@ -8,6 +8,7 @@ public class Constants {
     public static final String NAME_PACKAGE_AUTOWIRED_ROUTE = "com.andy.xparser.data";
 
     public static final String NAME_CLASS_PREFIX = "XParser";
+    public static final String NAME_CLASS_SUFFIX = "Index";
     public static final String SEPERATE = "__";
 
     public static final String NAME_METHOD_LOAD_DATA = "loadInto";

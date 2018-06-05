@@ -31,6 +31,18 @@ import java.util.Set;
 public class XParser {
     public static boolean Debugable = false;
 
+    /**
+     * 将每个module生成的Index进行收集（推荐）
+     * @param dataTypeProvider
+     */
+    public static void addIndex(@NonNull IDataTypeProvider dataTypeProvider) {
+        dataTypeProvider.loadInto(WareHouse.dataTypeMap);
+    }
+
+    /**
+     * 自动扫描com.andy.xparser.data下的所有class，加载数据(可能比较耗时)
+     * @param context
+     */
     public synchronized static void init(Context context) {
         // collect all data annotations
         try {
@@ -129,7 +141,12 @@ public class XParser {
         return bundle;
     }
 
-
+    /**
+     * 将JSON解析成Bundle
+     * @param path
+     * @param json
+     * @return
+     */
     public static Bundle fromJson(@NonNull String path, @NonNull String json) {
         if (JSONTypeMatcher.isJsonArray(json)) {
             // 不支持仅为JSON数组的数据
@@ -183,6 +200,14 @@ public class XParser {
         return bundle;
     }
 
+    /**
+     * 解析基本类型
+     * @param bundle 用于保存解析后的值
+     * @param key 保存的key
+     * @param valueType 该值的类型
+     * @param valueRaw 未解析的字符串
+     * @return
+     */
     private static boolean parseBasicType(Bundle bundle, String key, Type valueType,
             String valueRaw) {
         if (StringTypeMatcher.isByte(valueRaw) &&

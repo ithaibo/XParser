@@ -31,6 +31,7 @@ import javax.tools.Diagnostic;
 
 
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
@@ -44,12 +45,14 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
     private static final String FORMATTER_PREFIX_LOG = "--------XParserCompiler, %s";
     private Messager messager;
     private Filer mFiler;
+    private String mModuleName;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         messager = processingEnv.getMessager();
         mFiler = processingEnv.getFiler();
+        mModuleName = processingEnv.getOptions().get("moduleName");
     }
 
     @Override
@@ -64,12 +67,28 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
         messager.printMessage(Diagnostic.Kind.NOTE,
                 String.format(FORMATTER_PREFIX_LOG, "start to process..."));
 
-        Map<String, SourceModel> javaFileBuilderMap = new HashMap<>();
+        ParameterizedTypeName inputMapTypeOfGroup = ParameterizedTypeName.get(
+                ClassName.get(Map.class),
+                ClassName.get(String.class),
+                ClassName.get(Type.class)
+        );
+
+        ParameterSpec groupParamSpec = ParameterSpec.builder(inputMapTypeOfGroup,
+                "wareHouse").build();
+
+        MethodSpec.Builder method = MethodSpec.methodBuilder(Constants.NAME_METHOD_LOAD_DATA)
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addStatement("wareHouse.putAll(sMap);")
+                .addParameter(groupParamSpec);
+
+        CodeBlock.Builder codeBlockBuilder = CodeBlock.builder();
+        codeBlockBuilder.add("sMap = new $T();\n", new TypeToken<HashMap<String, Type>>(){}.getType());
+
         // collect all Annotation Route, Autowired.
         for (Element element : elements) {
             element.getEnclosedElements();
             VariableElement fieldElement = (VariableElement) element;
-            TypeElement classElement = (TypeElement) fieldElement.getEnclosingElement();
             Route route = fieldElement.getEnclosingElement().getAnnotation(Route.class);
             if (route == null) {
                 continue;
@@ -77,79 +96,42 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
 
             String dataName = element.getAnnotation(Autowired.class).name();
             String path = route.path();
-            String actSimpleName = classElement.getSimpleName().toString();
-            String fieldClassName = fieldElement.asType().toString();
-
-            SourceModel sourceModel;
-            if (javaFileBuilderMap.containsKey(path)) {
-                sourceModel = javaFileBuilderMap.get(path);
-            } else {
-                sourceModel = new SourceModel();
-            }
-
-            sourceModel.actSimpleName = actSimpleName;
-            sourceModel.dataName = dataName;
-            sourceModel.fieldClassName = fieldClassName;
-
-
-            if (null == sourceModel.method) {
-                ParameterizedTypeName inputMapTypeOfGroup = ParameterizedTypeName.get(
-                        ClassName.get(Map.class),
-                        ClassName.get(String.class),
-                        ClassName.get(Type.class)
-                );
-
-                ParameterSpec groupParamSpec = ParameterSpec.builder(inputMapTypeOfGroup,
-                        "wareHouse").build();
-
-                sourceModel.method = MethodSpec.methodBuilder(Constants.NAME_METHOD_LOAD_DATA)
-                        .addAnnotation(Override.class)
-                        .addModifiers(Modifier.PUBLIC)
-                        .addParameter(groupParamSpec);
-            }
 
             if (fieldElement.asType().getKind().isPrimitive()) {
-                sourceModel.method.addStatement("wareHouse.put($S, $T.class)",
+                codeBlockBuilder.add("sMap.put($S, $T.class);\n",
                         path + Constants.SEPERATE + dataName,
                         fieldElement.asType());
             } else {
-                sourceModel.method.addStatement("wareHouse.put($S, new $T<$T>(){}.getType())",
+                codeBlockBuilder.add("sMap.put($S, new $T<$T>(){}.getType());\n",
                         path + Constants.SEPERATE + dataName,
                         TypeToken.class,
                         fieldElement.asType());
             }
-            javaFileBuilderMap.put(path, sourceModel);
         }
 
-        if (!javaFileBuilderMap.isEmpty()) {
-            Set<String> keySet = javaFileBuilderMap.keySet();
-            for (String key : keySet) {
-                SourceModel sourceModel = javaFileBuilderMap.get(key);
-                if (sourceModel == null) {
-                    continue;
-                }
-                try {
-                    JavaFile.builder(Constants.NAME_PACKAGE_AUTOWIRED_ROUTE,
-                            TypeSpec.classBuilder(
-                                    Constants.NAME_CLASS_PREFIX + Constants.SEPERATE
-                                            + sourceModel.actSimpleName)
-                                    .addSuperinterface(IDataTypeProvider.class)
-                                    .addMethod(sourceModel.method.build())
-                                    .addModifiers(Modifier.PUBLIC)
-                                    .build())
-                            .build().writeTo(mFiler);
-                } catch (IOException e) {
-                    messager.printMessage(Diagnostic.Kind.ERROR,
-                            String.format(FORMATTER_PREFIX_LOG, e.getMessage()));
-                    e.printStackTrace();
+        try {
+            JavaFile.builder(Constants.NAME_PACKAGE_AUTOWIRED_ROUTE,
+                    TypeSpec.classBuilder(
+                            Constants.NAME_CLASS_PREFIX +
+                                    Constants.SEPERATE +
+                                    mModuleName +
+                                    Constants.SEPERATE +
+                                    Constants.NAME_CLASS_SUFFIX)
+                            .addMethod(method.build())
+                            .addSuperinterface(IDataTypeProvider.class)
+                            .addModifiers(Modifier.PUBLIC)
+                            .addField(new TypeToken<Map<String, Type>>(){}.getType(), "sMap", Modifier.STATIC)
+                            .addStaticBlock(codeBlockBuilder.build())
+                            .build())
+                    .build().writeTo(mFiler);
+        } catch (IOException e) {
+            messager.printMessage(Diagnostic.Kind.ERROR,
+                    String.format(FORMATTER_PREFIX_LOG, e.getMessage()));
+            e.printStackTrace();
 
-                    throw new RuntimeException(e);
-                }
-
-
-            }
-
+            throw new RuntimeException(e);
         }
+
         messager.printMessage(Diagnostic.Kind.NOTE,
                 String.format(FORMATTER_PREFIX_LOG, "process success."));
 

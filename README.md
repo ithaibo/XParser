@@ -55,3 +55,10 @@ String url = "http://host.com/app/config?id=123&name=fhifhie&data={\"int\":241, 
  2. 对第一层里面的每项数据进行解析，这里需要注意的是对于复杂类型，如上面的“user”的解析，需要知道其对应的Class。如何能知道该Class？该Class预先对每项数据的Class进行存储，然后在解析的时候获取出来。
 
 根据 path + key 获取对应的数据Class
+
+
+周星榜入口
+
+VerWeeklyStarPopupWindow
+
+la.shanggou.live.ui.activities.LiveActivity#showWeeklyData
