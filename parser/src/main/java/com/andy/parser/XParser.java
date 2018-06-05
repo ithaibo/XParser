@@ -101,7 +101,7 @@ public class XParser {
         }
     }
 
-    private static final String FORMAT_PATH_DATA = "%s" + Constants.SEPERATE +"%s";
+    private static final String FORMAT_PATH_DATA = "%s" + Constants.SEPERATOR +"%s";
 
     /**
      * 将uri解析为Bundle

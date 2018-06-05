@@ -99,11 +99,11 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
 
             if (fieldElement.asType().getKind().isPrimitive()) {
                 codeBlockBuilder.add("sMap.put($S, $T.class);\n",
-                        path + Constants.SEPERATE + dataName,
+                        path + Constants.SEPERATOR + dataName,
                         fieldElement.asType());
             } else {
                 codeBlockBuilder.add("sMap.put($S, new $T<$T>(){}.getType());\n",
-                        path + Constants.SEPERATE + dataName,
+                        path + Constants.SEPERATOR + dataName,
                         TypeToken.class,
                         fieldElement.asType());
             }
@@ -113,9 +113,9 @@ public class TypeAnnotationProcessor extends AbstractProcessor {
             JavaFile.builder(Constants.NAME_PACKAGE_AUTOWIRED_ROUTE,
                     TypeSpec.classBuilder(
                             Constants.NAME_CLASS_PREFIX +
-                                    Constants.SEPERATE +
+                                    Constants.SEPERATOR +
                                     mModuleName +
-                                    Constants.SEPERATE +
+                                    Constants.SEPERATOR +
                                     Constants.NAME_CLASS_SUFFIX)
                             .addMethod(method.build())
                             .addSuperinterface(IDataTypeProvider.class)
